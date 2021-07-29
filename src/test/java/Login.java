@@ -52,10 +52,10 @@ public class Login{
 
     @Test(description = "positive scenario test which will be verifying only 'boundary values' criteria")
     private void testPositiveScenarioForEnteringMailOnlyBoundaryValues(){
-        loginPage.inputEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@gmail.com");
+        loginPage.inputEmail("this.is.a.63.character.text.this.is.a.63.character.text.this.is@gmail.com");
         Assert.assertTrue(loginPage.btnContinueIsEnabled());
 
-        loginPage.inputEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@gmail.com");
+        loginPage.inputEmail("this.is.a.64.character.text.this.is.a.64.character.text.this.is.@gmail.com");
         Assert.assertTrue(loginPage.btnContinueIsEnabled());
 
         loginPage.inputEmail("prostfanat2001@gmail.co");
@@ -82,7 +82,7 @@ public class Login{
         loginPage.inputEmail("prostfanat2001@gmailcom");
         Assert.assertFalse(loginPage.btnContinueIsEnabled());
 
-        loginPage.inputEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@gmail.com");
+        loginPage.inputEmail("this.is.a.65.character.text.this.is.a.65.character.text.this.is.a@gmail.com");
         Assert.assertFalse(loginPage.btnContinueIsEnabled());
 
         loginPage.inputEmail("prostfanat2001@gmail.c");
@@ -103,7 +103,7 @@ public class Login{
         loginPage.inputEmail("prostfanat2001@gmailcom");
         softAssert.assertFalse(loginPage.btnContinueIsEnabled());
 
-        loginPage.inputEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@gmail.com");
+        loginPage.inputEmail("this.is.a.65.character.text.this.is.a.65.character.text.this.is.a@gmail.com");
         softAssert.assertFalse(loginPage.btnContinueIsEnabled());
 
         loginPage.inputEmail("prostfanat2001@gmail.c");
