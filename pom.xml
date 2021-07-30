@@ -9,9 +9,6 @@
     <version>1.0-SNAPSHOT</version>
 
 
-    <properties>
-        <aspectj.version>1.9.5</aspectj.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
