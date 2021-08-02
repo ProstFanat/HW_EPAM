@@ -1,5 +1,6 @@
 package pageObjects.businessObjects;
 
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 import pageObjects.BasePage;
 import pageObjects.SignInPage;
@@ -8,7 +9,7 @@ import resources.ConfProperties;
 public class SignInBO extends BasePage {
 
     private SignInPage signInPage;
-
+    private static final Logger LOG = Logger.getLogger(SignInBO.class);
     public SignInBO(){
         signInPage = new SignInPage();
     }
@@ -17,6 +18,7 @@ public class SignInBO extends BasePage {
         driver.get(ConfProperties.getProperty("BASE_URL"));
         signInPage.clickBtnSignIn()
                 .clickBtnUseAnotherAccount();
+        LOG.info("'Log In' page opened");
         return this;
     }
 
@@ -25,11 +27,13 @@ public class SignInBO extends BasePage {
                 .clickBtnContinue()
                 .inputPassword(pass)
                 .clickBtnLogin();
+        LOG.info(String.format("Logging user with credentials: 'Mail: %s' 'Pass: %s'", email, pass));
         return this;
     }
 
     public SignInBO inputLoginName(String email){
         signInPage.inputEmail(email);
+        LOG.info(String.format("Input email: '%s'", email));
         return this;
     }
 

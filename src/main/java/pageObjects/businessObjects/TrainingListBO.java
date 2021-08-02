@@ -1,10 +1,12 @@
 package pageObjects.businessObjects;
 
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 import pageObjects.HomePage;
 import pageObjects.TrainingListPage;
 
 public class TrainingListBO {
+    private static final Logger LOG = Logger.getLogger(TrainingListBO.class);
     private TrainingListPage trainingListPage;
     private HomePage homePage;
 
@@ -16,6 +18,7 @@ public class TrainingListBO {
     public TrainingListBO openTrainingListPage(){
         if(homePage.isRightUserNameDisplayed()){
             homePage.clickBtnTrainingList();
+            LOG.info("'Training List' page opened");
         }
         return this;
     }
@@ -25,6 +28,7 @@ public class TrainingListBO {
                 .clickBtnBySkills()
                 .setCheckboxSearchByJava(true)
                 .clickOnSearchInput();
+        LOG.info("'Training List' sorted by 'Java'");
         return this;
     }
 
@@ -33,6 +37,7 @@ public class TrainingListBO {
                 .clickBtnBySkills()
                 .setCheckboxSearchByJava(false)
                 .clickOnSearchInput();
+        LOG.info("'Training List' unsorted by 'Java'");
         return this;
     }
 
@@ -41,6 +46,7 @@ public class TrainingListBO {
                 .clickBtnBySkills()
                 .setCheckboxSearchByRuby(true)
                 .clickOnSearchInput();
+        LOG.info("'Training List' sorted by 'Ruby'");
         return this;
     }
 
@@ -49,6 +55,7 @@ public class TrainingListBO {
                 .clickBtnBySkills()
                 .setCheckboxSearchByRuby(false)
                 .clickOnSearchInput();
+        LOG.info("'Training List' unsorted by 'Ruby'");
         return this;
     }
 

@@ -1,9 +1,13 @@
 package pageObjects;
 
+
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 public class SignInPage extends BasePage {
+    private static final Logger LOG = Logger.getLogger(SignInPage.class);
+
     @FindBy(id = "username")
     private WebElement emailInput;
 
@@ -34,6 +38,7 @@ public class SignInPage extends BasePage {
     public SignInPage clickBtnSignIn(){
         waitToVisibilityOf(5000, btnSighIn);
         btnSighIn.click();
+        LOG.info("'Sign In' button clicked");
         return this;
     }
 
@@ -41,6 +46,7 @@ public class SignInPage extends BasePage {
         waitForPageLoaded();
         try {
             btnUseAnotherAccount.click();
+            LOG.info("'Use Another Account' button clicked");
         } catch (Exception ignored) {}
         return this;
     }
@@ -49,6 +55,7 @@ public class SignInPage extends BasePage {
         waitToVisibilityOf(5000, emailInput);
         emailInput.clear();
         emailInput.sendKeys(email);
+        LOG.info("Mail was entered.");
         return this;
     }
 
@@ -56,28 +63,35 @@ public class SignInPage extends BasePage {
         waitToBeClickable(5000, passwordInput);
         passwordInput.clear();
         passwordInput.sendKeys(pass);
+        LOG.info("Password was entered.");
         return this;
     }
 
     public SignInPage clickBtnContinue(){
         waitToBeClickable(5000, btnContinue);
         btnContinue.click();
+        LOG.info("'Continue' button clicked");
         return this;
     }
 
     public SignInPage clickBtnLogin(){
         waitToBeClickable(5000, btnLogin);
         btnLogin.click();
+        LOG.info("'Log In' button clicked");
         return this;
     }
 
     public boolean isLoginFailedErrorMessageDisplayed(){
         waitForPageLoaded();
-        return "We can't find user with such credentials.".equals(errorMessage.getText().trim());
+        boolean isDisplayed = "We can't find user with such credentials.".equals(errorMessage.getText().trim());
+        LOG.info(String.format("Is 'Login Failed Error Message' displayed': '%s'", isDisplayed));
+        return isDisplayed;
     }
 
     public boolean isContinueBtnEnabled(){
         waitForPageLoaded();
+        boolean isEnabled = btnContinue.isEnabled();
+        LOG.info(String.format("Is  button 'Continue' enabled : '%s'", isEnabled));
         return btnContinue.isEnabled();
     }
 

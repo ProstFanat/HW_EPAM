@@ -1,11 +1,14 @@
 package pageObjects;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
 public class TrainingListPage extends BasePage {
+    private static final Logger LOG = Logger.getLogger(TrainingListPage.class);
+
     @FindBy(xpath = "//input[@name = 'training-filter-input']")
     private WebElement searchInput;
 
@@ -30,12 +33,14 @@ public class TrainingListPage extends BasePage {
     public TrainingListPage clickOnSearchInput(){
         waitToBeClickable(5000, searchInput);
         searchInput.click();
+        LOG.info("Search input clicked");
         return this;
     }
 
     public TrainingListPage clickBtnBySkills(){
         waitToBeClickable(5000, btnBySkills);
         btnBySkills.click();
+        LOG.info("'By skills' button clicked");
         return this;
     }
 
@@ -47,35 +52,42 @@ public class TrainingListPage extends BasePage {
         if(value){
             if(!checkboxSearchByJava.isSelected()){
                 checkboxSearchByJava.click();
+                LOG.info("'By Java' checkbox activated");
             }
-        } else if(!value){
+        } else {
             if(checkboxSearchByJava.isSelected()){
                 checkboxSearchByJava.click();
+                LOG.info("'By Java' checkbox deactivated");
             }
         }
         return this;
     }
 
     public TrainingListPage setCheckboxSearchByRuby(Boolean value){
-        //waitToVisibilityOf(5000, checkboxSearchByRuby);
         if(value){
             if(!checkboxSearchByRuby.isSelected()){
                 checkboxSearchByRuby.click();
+                LOG.info("'By Ruby' checkbox activated");
             }
-        } else if(!value){
+        } else {
             if(checkboxSearchByRuby.isSelected()){
                 checkboxSearchByRuby.click();
+                LOG.info("'By Ruby' checkbox deactivated");
             }
         }
         return this;
     }
 
     public boolean isTrainingListContainsOnlyJava(){
-        return trainingsList == trainingsListJavaOnly;
+        boolean isContains = trainingsList == trainingsListJavaOnly;
+        LOG.info(String.format("Is 'Training List' contains only java': '%s'", isContains));
+        return isContains;
     }
 
     public boolean isInfoMessageDisplayed(){
         waitForPageLoaded();
-        return infoMessage.isDisplayed();
+        boolean isDisplayed = infoMessage.isDisplayed();
+        LOG.info(String.format("Is 'Info Message' displayed': '%s'", isDisplayed));
+        return isDisplayed;
     }
 }
