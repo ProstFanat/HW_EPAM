@@ -12,7 +12,7 @@ public class DriverFactory {
     private static WebDriver driver;
 
     protected void initDriver(){
-        System.setProperty(ConfProperties.getProperty("CHROME_NAME"), ConfProperties.getProperty("CHROME_DRIVER_LOCATION"));
+        System.setProperty(ConfProperties.getProperty("CHROME_NAME"), ConfProperties.getProperty("CHROME_DRIVER_LOCATION_LINUX"));
         LOG.info(String.format("Set system property: '%s' , '%s'", ConfProperties.getProperty("CHROME_NAME"), ConfProperties.getProperty("CHROME_DRIVER_LOCATION")));
         driver = new ChromeDriver();
         LOG.info("Driver started");
