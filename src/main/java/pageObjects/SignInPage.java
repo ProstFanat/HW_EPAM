@@ -3,6 +3,8 @@ package pageObjects;
 
 import decorator.elements.Element;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -47,11 +49,12 @@ public class SignInPage extends BasePage {
         try {
             btnUseAnotherAccount.click();
             LOG.info("'Use Another Account' button clicked");
-        } catch (Exception ignored) {}
+        } catch (ElementNotInteractableException ignored) {}
         return this;
     }
 
     public SignInPage inputEmail(String email){
+       //TODO убрать вейты, где они не нужны
         waitToVisibilityOf(5000, emailInput);
         emailInput.clear();
         emailInput.sendKeys(email);

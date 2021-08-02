@@ -24,6 +24,7 @@ public class BlogBO {
     }
 
     public BlogBO verifyAllLinksDisplayed(){
+        //TODO סמפע אס¸נעû
         Assert.assertTrue(blogPage.isAllLinksDisplayed());
         return this;
     }

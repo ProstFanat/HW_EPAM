@@ -14,6 +14,8 @@ public class BlogPage extends BasePage {
     private List<WebElement> listOfLinks;
 
     public boolean isAllLinksDisplayed(){
+        //TODO переделать под софт асёрты
+
         List<String> links = new ArrayList<>();
         links.add("News"); links.add("Real Stories"); links.add("Materials"); links.add("Hard Skills"); links.add("Soft Skills"); links.add("Events");
         boolean isDisplayed = false;

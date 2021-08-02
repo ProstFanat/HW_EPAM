@@ -3,6 +3,7 @@ package pageObjects;
 import decorator.elements.Checkbox;
 import decorator.elements.Element;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -41,7 +42,7 @@ public class TrainingListPage extends BasePage {
     @FindBy(xpath = "//div[contains(@class, 'training-list__desktop')]//a[@class = 'training-item__link']//div[contains(text(), 'Java')]")
     private List<WebElement> trainingsListJavaOnly;
 
-    @FindBy(xpath = "//div[contains(@class, 'training-list__desktop')]//div[@class = 'training-item__inner']//*[not(@ng-show = 'isShowTooltipCountry(trainingItem)') and contains(text(), 'Ukraine') or contains(text(), 'Multi-location')]")
+    @FindBy(xpath = "//div[contains(@class, 'training-list__desktop')]//*[self::div or self::span][contains(text(), 'Ukraine') or contains(text(), 'Multi-location')]")
     private List<WebElement> trainingsListUkraineAndMultiLocationOnly;
 
     @FindBy(xpath = "//span[contains(text() , 'No training are available.')]")
@@ -67,6 +68,11 @@ public class TrainingListPage extends BasePage {
 
     public TrainingListPage setCheckboxSearchByJava(Boolean value){
         Checkbox.setSelected(checkboxSearchByJava, value, "Java");
+        return this;
+    }
+
+    public TrainingListPage setCheckboxSearchByCourse(String course, Boolean value){
+        Checkbox.setSelected(driver.findElement(By.xpath(String.format("//div[contains(@class, 'location__skills')]//label[normalize-space()='%s']/span", course))), value, "Java");
         return this;
     }
 
