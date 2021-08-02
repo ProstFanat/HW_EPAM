@@ -1,6 +1,7 @@
 package pageObjects;
 
 
+import decorator.elements.Element;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -36,8 +37,7 @@ public class SignInPage extends BasePage {
     private WebElement errorMessage;
 
     public SignInPage clickBtnSignIn(){
-        waitToVisibilityOf(5000, btnSighIn);
-        btnSighIn.click();
+        Element.click(btnSighIn);
         LOG.info("'Sign In' button clicked");
         return this;
     }
@@ -68,15 +68,13 @@ public class SignInPage extends BasePage {
     }
 
     public SignInPage clickBtnContinue(){
-        waitToBeClickable(5000, btnContinue);
-        btnContinue.click();
+        Element.click(btnContinue);
         LOG.info("'Continue' button clicked");
         return this;
     }
 
     public SignInPage clickBtnLogin(){
-        waitToBeClickable(5000, btnLogin);
-        btnLogin.click();
+        Element.click(btnLogin);
         LOG.info("'Log In' button clicked");
         return this;
     }

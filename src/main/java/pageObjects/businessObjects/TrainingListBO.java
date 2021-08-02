@@ -59,6 +59,34 @@ public class TrainingListBO {
         return this;
     }
 
+    public TrainingListBO activateCheckboxFilterByLviv(){
+        trainingListPage.clickOnSearchInput()
+                .clickBtnByLocations()
+                .clickBtnUkraine()
+                .setCheckboxByLviv(true)
+                .clickOnSearchInput();
+        LOG.info("'Training List' sorted by 'Ukraine - Lviv'");
+        return this;
+    }
+
+    public TrainingListBO deactivateCheckboxFilterByLviv(){
+        trainingListPage.clickOnSearchInput()
+                .clickBtnByLocations()
+                .clickBtnUkraine()
+                .setCheckboxChooseAllCities(false)
+                .setCheckboxByLviv(false)
+                .clickOnSearchInput();
+        LOG.info("'Training List' unsorted by 'Ukraine - Lviv'");
+        return this;
+    }
+
+    public TrainingListBO clearAllFilters(){
+        trainingListPage.clickBtnDeactivateSelectedSkills()
+                .clickBtnDeactivateSelectedLocations();
+        LOG.info("Clear Filters");
+        return this;
+    }
+
     public TrainingListBO verifySearchWithJavaWordOnly(){
         Assert.assertTrue(trainingListPage.isTrainingListContainsOnlyJava());
         return this;
@@ -66,6 +94,11 @@ public class TrainingListBO {
 
     public TrainingListBO verifyInfoMessageDisplayed(){
         Assert.assertTrue(trainingListPage.isInfoMessageDisplayed());
+        return this;
+    }
+
+    public TrainingListBO verifySearchWithUkraineOrMultiLocation(){
+        Assert.assertTrue(trainingListPage.isTrainingListContainsOnlyUkraineAndMultiLocation());
         return this;
     }
 }

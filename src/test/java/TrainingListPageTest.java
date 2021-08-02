@@ -1,5 +1,3 @@
-import driver.DriverFactory;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import pageObjects.businessObjects.SignInBO;
@@ -18,12 +16,20 @@ public class TrainingListPageTest extends BaseTest {
     }
 
     @Test(description = "Verify ‘Trainings’ search works properly with searching in ‘Skills’.")
-    public void testTrainingsSearch(){
-        trainingListBO.activateCheckboxFilterByJava()
+    public void testTrainingsSearchBySkills(){
+        trainingListBO.clearAllFilters()
+                .activateCheckboxFilterByJava()
                 .verifySearchWithJavaWordOnly()
 
                 .deactivateCheckboxFilterByJava()
                 .activateCheckboxFilterByRuby()
                 .verifyInfoMessageDisplayed();
+    }
+
+    @Test(description = "Verify ‘Trainings’ search works properly with searching in ‘Locations’.")
+    public void testTrainingsSearchByLocations(){
+        trainingListBO.clearAllFilters()
+                .activateCheckboxFilterByLviv()
+                .verifySearchWithUkraineOrMultiLocation();
     }
 }

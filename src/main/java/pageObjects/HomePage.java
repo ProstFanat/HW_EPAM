@@ -1,5 +1,6 @@
 package pageObjects;
 
+import decorator.elements.Element;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -21,24 +22,31 @@ public class HomePage extends BasePage {
     @FindBy(xpath = "//nav[@class= 'main-nav']//a[contains(@class, 'training')]")
     private WebElement btnTrainingList;
 
+    @FindBy(xpath = "//nav[@class= 'main-nav']//a[contains(text(), 'Blog')]")
+    private WebElement btnBlog;
+
+
     public HomePage clickUserPhoto(){
-        waitToBeClickable(5000, infoUserPhoto);
-        infoUserPhoto.click();
+        Element.click(infoUserPhoto);
         LOG.info("'User Photo' clicked");
         return this;
     }
 
     public HomePage clickBtnLogOut(){
-        waitToBeClickable(5000, btnLogOut);
-        btnLogOut.click();
+        Element.click(btnLogOut);
         LOG.info("'Log out' button clicked");
         return this;
     }
 
     public HomePage clickBtnTrainingList(){
-        waitToBeClickable(5000, btnTrainingList);
-        btnTrainingList.click();
+        Element.click(btnTrainingList);
         LOG.info("'Training List' button clicked");
+        return this;
+    }
+
+    public HomePage clickBtnBlogPage(){
+        Element.click(btnBlog);
+        LOG.info("'BLOG' button clicked");
         return this;
     }
 

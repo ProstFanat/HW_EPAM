@@ -45,4 +45,13 @@ public class BasePage {
             System.out.println("Test failed. Time to wait is end " + e);
         }
     }
+
+    public boolean existsElement(WebElement element) {
+        try {
+            element.isEnabled();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+        return true;
+    }
 }
