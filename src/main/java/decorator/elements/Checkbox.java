@@ -6,8 +6,23 @@ import pageObjects.BasePage;
 
 
 public class Checkbox {
+    private static Logger LOG = Logger.getLogger(Checkbox.class);
     public static void setSelected(WebElement element, Boolean value, String name){
-        Logger LOG = Logger.getLogger(Checkbox.class);
+        new BasePage().waitToBeClickable(5000, element);
+        if(value){
+            if(!element.isSelected()){
+                element.click();
+                LOG.info(String.format("'%s' checkbox activated", name));
+            }
+        } else {
+            if(element.isSelected()){
+                element.click();
+                LOG.info(String.format("'%s' checkbox deactivated", name));
+            }
+        }
+    }
+
+    public static void setSelectedInvlaidCheckBox(WebElement element, Boolean value, String name){
         new BasePage().waitToBeClickable(5000, element);
         if(value){
             if(!element.isSelected()){

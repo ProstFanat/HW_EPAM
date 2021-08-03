@@ -1,4 +1,5 @@
 import dataProvider.EmailValues;
+import org.testng.annotations.AfterGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -9,6 +10,8 @@ import resources.ConfProperties;
 
 public class SignInPageTest extends BaseTest {
 
+    SoftAssert sa = new SoftAssert();
+
     @BeforeMethod
     private void setupForTest(){
         new SignInBO()
@@ -17,17 +20,16 @@ public class SignInPageTest extends BaseTest {
 
     @Test(description = "Verify login with appropriate credentials.")
     private void testLoginWithValidCredentials(){
-        new SignInBO().login(ConfProperties.getProperty("LOGIN_MAIL"),
-                ConfProperties.getProperty("LOGIN_PASS"));
-
-        new HomeBO().verifyThatRightUserNameDisplayed()
-                    .logOut();
+        new SignInBO().loginValid(ConfProperties.getProperty("LOGIN_MAIL"),
+                ConfProperties.getProperty("LOGIN_PASS"))
+                .verifyThatRightUserNameDisplayed()
+                .logOut();
     }
 
     @Test(description = "Verify login with invalid password.")
     private void testLoginWithInValidPassword(){
-        new SignInBO().login(ConfProperties.getProperty("LOGIN_MAIL"),
-                ConfProperties.getProperty("LOGIN_INCORRECTPASS"))
+        new SignInBO().loginInvalid(ConfProperties.getProperty("LOGIN_MAIL"),
+                ConfProperties.getProperty("LOGIN_INCORRECT_PASS"))
                 .verifyFailedLoginErrorMessageDisplayed();
     }
 

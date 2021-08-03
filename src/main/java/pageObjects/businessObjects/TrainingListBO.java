@@ -15,68 +15,42 @@ public class TrainingListBO {
         homePage = new HomePage();
     }
 
-    public TrainingListBO openTrainingListPage(){
-        if(homePage.isRightUserNameDisplayed()){
-            homePage.clickBtnTrainingList();
-            LOG.info("'Training List' page opened");
-        }
-        return this;
-    }
-
-    public TrainingListBO activateCheckboxFilterByJava(){
+    public TrainingListBO activateCheckboxFilterBySkill(String skill){
         trainingListPage.clickOnSearchInput()
                 .clickBtnBySkills()
-                .setCheckboxSearchByJava(true)
+                .setCheckboxSearchBySkill(skill, true)
                 .clickOnSearchInput();
-        LOG.info("'Training List' sorted by 'Java'");
+        LOG.info(String.format("'Training List' sorted by '%s'", skill));
         return this;
     }
 
-    public TrainingListBO deactivateCheckboxFilterByJava(){
+    public TrainingListBO deactivateCheckboxFilterBySkill(String skill){
         trainingListPage.clickOnSearchInput()
                 .clickBtnBySkills()
-                .setCheckboxSearchByJava(false)
+                .setCheckboxSearchBySkill(skill,false)
                 .clickOnSearchInput();
-        LOG.info("'Training List' unsorted by 'Java'");
+        LOG.info(String.format("'Training List' unsorted by '%s'", skill));
         return this;
     }
 
-    public TrainingListBO activateCheckboxFilterByRuby(){
-        trainingListPage.clickOnSearchInput()
-                .clickBtnBySkills()
-                .setCheckboxSearchByRuby(true)
-                .clickOnSearchInput();
-        LOG.info("'Training List' sorted by 'Ruby'");
-        return this;
-    }
-
-    public TrainingListBO deactivateCheckboxFilterByRuby(){
-        trainingListPage.clickOnSearchInput()
-                .clickBtnBySkills()
-                .setCheckboxSearchByRuby(false)
-                .clickOnSearchInput();
-        LOG.info("'Training List' unsorted by 'Ruby'");
-        return this;
-    }
-
-    public TrainingListBO activateCheckboxFilterByLviv(){
+    public TrainingListBO activateCheckboxFilterByCity(String country, String city){
         trainingListPage.clickOnSearchInput()
                 .clickBtnByLocations()
-                .clickBtnUkraine()
-                .setCheckboxByLviv(true)
+                .selectCountry(country)
+                .setCheckboxByCity(city,true)
                 .clickOnSearchInput();
-        LOG.info("'Training List' sorted by 'Ukraine - Lviv'");
+        LOG.info(String.format("'Training List' sorted by '%s - %s'", country, city));
         return this;
     }
 
-    public TrainingListBO deactivateCheckboxFilterByLviv(){
+    public TrainingListBO deactivateCheckboxFilterByCity(String country, String city){
         trainingListPage.clickOnSearchInput()
                 .clickBtnByLocations()
-                .clickBtnUkraine()
+                .selectCountry(country)
                 .setCheckboxChooseAllCities(false)
-                .setCheckboxByLviv(false)
+                .setCheckboxByCity(city,false)
                 .clickOnSearchInput();
-        LOG.info("'Training List' unsorted by 'Ukraine - Lviv'");
+        LOG.info(String.format("'Training List' unsorted by '%s - %s'", country, city));
         return this;
     }
 
@@ -87,8 +61,8 @@ public class TrainingListBO {
         return this;
     }
 
-    public TrainingListBO verifySearchWithJavaWordOnly(){
-        Assert.assertTrue(trainingListPage.isTrainingListContainsOnlyJava());
+    public TrainingListBO verifySearchWithBySkillWordOnly(String skill){
+        Assert.assertTrue(trainingListPage.isTrainingListContainsOnlySkill(skill));
         return this;
     }
 
@@ -97,8 +71,13 @@ public class TrainingListBO {
         return this;
     }
 
-    public TrainingListBO verifySearchWithUkraineOrMultiLocation(){
-        Assert.assertTrue(trainingListPage.isTrainingListContainsOnlyUkraineAndMultiLocation());
+    public TrainingListBO verifySearchWithCountry(String country){
+        Assert.assertTrue(trainingListPage.isTrainingListContainsOnlyCountry(country));
+        return this;
+    }
+
+    public TrainingListBO verifySearchWithCountryAndMultiLocation(String country){
+        Assert.assertTrue(trainingListPage.isTrainingListContainsOnlyCountryAndMultiLocation(country));
         return this;
     }
 }

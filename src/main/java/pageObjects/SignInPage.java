@@ -7,6 +7,7 @@ import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import resources.ConfProperties;
 
 public class SignInPage extends BasePage {
     private static final Logger LOG = Logger.getLogger(SignInPage.class);
@@ -54,7 +55,6 @@ public class SignInPage extends BasePage {
     }
 
     public SignInPage inputEmail(String email){
-       //TODO убрать вейты, где они не нужны
         waitToVisibilityOf(5000, emailInput);
         emailInput.clear();
         emailInput.sendKeys(email);
@@ -84,7 +84,7 @@ public class SignInPage extends BasePage {
 
     public boolean isLoginFailedErrorMessageDisplayed(){
         waitForPageLoaded();
-        boolean isDisplayed = "We can't find user with such credentials.".equals(errorMessage.getText().trim());
+        boolean isDisplayed = ConfProperties.getProperty("CREDENTIAL_ERROR_MESSAGE").equals(errorMessage.getText().trim());
         LOG.info(String.format("Is 'Login Failed Error Message' displayed': '%s'", isDisplayed));
         return isDisplayed;
     }

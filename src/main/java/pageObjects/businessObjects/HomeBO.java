@@ -23,6 +23,22 @@ public class HomeBO {
         return this;
     }
 
+    public BlogBO openBlogPage(){
+        if(homePage.isRightUserNameDisplayed()){
+            homePage.clickBtnBlogPage();
+            LOG.info("'Blog' page opened");
+        }
+        return new BlogBO();
+    }
+
+    public TrainingListBO openTrainingListPage(){
+        if(homePage.isRightUserNameDisplayed()){
+            homePage.clickBtnTrainingList();
+            LOG.info("'Training List' page opened");
+        }
+        return new TrainingListBO();
+    }
+
 
 
 }

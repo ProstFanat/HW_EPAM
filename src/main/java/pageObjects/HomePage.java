@@ -4,6 +4,7 @@ import decorator.elements.Element;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import resources.ConfProperties;
 
 
 public class HomePage extends BasePage {
@@ -51,7 +52,7 @@ public class HomePage extends BasePage {
     }
 
     public boolean isRightUserNameDisplayed(){
-        boolean isRight = "Adrian Boychuk".equals(infoUserName.getText().trim());
+        boolean isRight = ConfProperties.getProperty("USER_NAME").equals(infoUserName.getText().trim());
         LOG.info(String.format("Is 'Right User Name' displayed : '%s'", isRight));
         return isRight;
     }
