@@ -1,12 +1,10 @@
 import dataProvider.BlogLinks;
 import org.testng.annotations.*;
-import org.testng.asserts.SoftAssert;
 import pageObjects.businessObjects.BlogBO;
 import pageObjects.businessObjects.SignInBO;
 import resources.ConfProperties;
 
-public class BlogPageTest extends BaseTest{
-    SoftAssert sa = new SoftAssert();
+public class BlogPageTest extends BaseTest {
 
     @BeforeGroups("Links test")
     private void setUp(){
