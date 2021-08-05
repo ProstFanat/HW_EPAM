@@ -2,7 +2,6 @@ package pageObjects.businessObjects;
 
 import org.apache.log4j.Logger;
 import org.testng.Assert;
-import org.testng.asserts.SoftAssert;
 import pageObjects.BasePage;
 import pageObjects.SignInPage;
 import resources.ConfProperties;
@@ -18,8 +17,7 @@ public class SignInBO extends BasePage {
     public SignInBO openSignInPage(){
         driver.get(ConfProperties.getProperty("BASE_URL"));
         LOG.info(String.format("Page opened - %s", ConfProperties.getProperty("BASE_URL")));
-        signInPage.clickBtnSignIn()
-                .clickBtnUseAnotherAccount();
+        signInPage.clickBtnSignIn();
         LOG.info("'Log In' page opened");
         return this;
     }

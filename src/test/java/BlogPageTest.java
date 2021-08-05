@@ -17,7 +17,7 @@ public class BlogPageTest extends BaseTest{
 
     @Test(dataProvider = "blog-links", dataProviderClass = BlogLinks.class, groups = {"Links test"}, description = "Verify links on ‘Blog’ Page ")
     private void testLinksOnPage(String link){
-        new BlogBO().verifyLinkDisplayed(sa, link);
+        new BlogBO().verifyLinkDisplayed(link);
     }
 
 }

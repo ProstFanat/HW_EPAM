@@ -1,21 +1,20 @@
 import dataProvider.EmailValues;
-import org.testng.annotations.AfterGroups;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
-import pageObjects.businessObjects.HomeBO;
+import driver.DriverFactory;
+import org.testng.annotations.*;
 import pageObjects.businessObjects.SignInBO;
 import resources.ConfProperties;
 
-public class SignInPageTest extends BaseTest {
-
-    SoftAssert sa = new SoftAssert();
-
+public class SignInPageTest{
     @BeforeMethod
-    private void setupForTest(){
+    private void setUp(){
+        DriverFactory.initDriver();
         new SignInBO()
                 .openSignInPage();
+    }
+
+    @AfterMethod
+    private void tearDown(){
+        DriverFactory.quitDriver();
     }
 
     @Test(description = "Verify login with appropriate credentials.")
@@ -39,15 +38,19 @@ public class SignInPageTest extends BaseTest {
                         .verifyBtnContinueIsEnabled();
     }
 
-    @Test(dataProvider = "valid-emails", dataProviderClass = EmailValues.class, description = "positive scenario test which will be verifying only 'boundary values' criteria")
+    @Test(dataProvider = "valid-emails", dataProviderClass = EmailValues.class,
+            description = "positive scenario test which will be verifying only 'boundary values' criteria")
     private void testPositiveScenarioForEnteringMailOnlyBoundaryValues(String mail){
         new SignInBO().inputLoginName(mail)
                 .verifyBtnContinueIsEnabled();
     }
 
-    @Test(dataProvider = "invalid-emails", dataProviderClass = EmailValues.class, description = "negative scenario test with verifying all the criteria")
+    @Test(dataProvider = "invalid-emails", dataProviderClass = EmailValues.class,
+            description = "negative scenario test with verifying all the criteria")
     private void testNegativeScenarioForEnteringMail(String mail){
         new SignInBO().inputLoginName(mail)
                 .verifyBtnContinueIsDisabled();
     }
+
+
 }

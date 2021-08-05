@@ -11,7 +11,7 @@ public class DriverFactory {
     private static final Logger LOG = Logger.getLogger(DriverFactory.class);
     private static WebDriver driver;
 
-    protected void initDriver(){
+    public static void initDriver(){
         System.setProperty(ConfProperties.getProperty("CHROME_NAME"), ConfProperties.getProperty("CHROME_DRIVER_LOCATION_LINUX"));
         LOG.info(String.format("Set system property: '%s' , '%s'", ConfProperties.getProperty("CHROME_NAME"), ConfProperties.getProperty("CHROME_DRIVER_LOCATION")));
         driver = new ChromeDriver();
@@ -26,7 +26,7 @@ public class DriverFactory {
         return driver;
     }
 
-    protected void quitDriver(){
+    public static void quitDriver(){
         if(driver != null){
             driver.quit();
             LOG.info("Driver was closed");
