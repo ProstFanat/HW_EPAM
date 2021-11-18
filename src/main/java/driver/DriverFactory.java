@@ -15,21 +15,23 @@ public class DriverFactory {
     private static WebDriver driver;
 
     public static void initDriver(){
-        switch (getParameter("browser")) {
-            case "chrome" -> {
-                WebDriverManager.chromedriver().setup();
-                LOG.info(String.format("Set system property: '%s' , '%s'", ConfProperties.getProperty("CHROME_NAME"), ConfProperties.getProperty("CHROME_DRIVER_LOCATION")));
-                driver = new ChromeDriver();
+        String browser = System.getProperty("browser");
+        if(browser == null) browser = "chrome";
+        switch (browser) {
+            case "firefox" -> {
+                WebDriverManager.firefoxdriver().setup();
+                LOG.info("Set system property: 'firefox'");
+                driver = new FirefoxDriver();
                 LOG.info("Driver started");
                 driver.manage().window().maximize();
                 LOG.info("Driver set maximize");
                 driver.manage().timeouts().implicitlyWait(Long.parseLong(ConfProperties.getProperty("IMPLICITLY_WAIT_VALUE")), TimeUnit.SECONDS);
                 LOG.info("Set Implicitly wait 10 second");
             }
-            case "firefox" -> {
-                WebDriverManager.firefoxdriver().setup();
-                LOG.info("Set system property: 'firefox'");
-                driver = new FirefoxDriver();
+            default -> {
+                WebDriverManager.chromedriver().setup();
+                LOG.info(String.format("Set system property: '%s' , '%s'", ConfProperties.getProperty("CHROME_NAME"), ConfProperties.getProperty("CHROME_DRIVER_LOCATION")));
+                driver = new ChromeDriver();
                 LOG.info("Driver started");
                 driver.manage().window().maximize();
                 LOG.info("Driver set maximize");
@@ -51,14 +53,13 @@ public class DriverFactory {
         }
     }
 
-    private static String getParameter(String name) {
-        String value = System.getProperty(name);
-        if (value == null)
-            throw new RuntimeException(name + " is not a parameter!");
-
-        if (value.isEmpty())
-            throw new RuntimeException(name + " is empty!");
-
-        return value;
-    }
+//    private static String getParameter(String name) {
+//        String value = System.getProperty(name);
+//        if (value == null)
+//            throw new RuntimeException(name + " is null");
+//        if (value.isEmpty())
+//            throw new RuntimeException(name + " is empty!");
+//
+//        return value;
+//    }
 }
