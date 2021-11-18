@@ -17,6 +17,10 @@ public class SignInPageTest{
         DriverFactory.quitDriver();
     }
 
+    @Test
+    public void test1123(){
+    }
+
     @Test(description = "Verify login with appropriate credentials.", threadPoolSize = 30)
     private void testLoginWithValidCredentials(){
         new SignInBO().loginValid(ConfProperties.getProperty("LOGIN_MAIL"),
