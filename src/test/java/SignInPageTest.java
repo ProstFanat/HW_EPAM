@@ -1,10 +1,14 @@
 import dataProvider.EmailValues;
 import driver.DriverFactory;
+import org.jsoup.Connection;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
+import pageObjects.BasePage;
 import pageObjects.businessObjects.SignInBO;
 import resources.ConfProperties;
 
 public class SignInPageTest{
+
     @BeforeMethod
     private void setUp(){
         DriverFactory.initDriver();
@@ -13,12 +17,9 @@ public class SignInPageTest{
     }
 
     @AfterMethod
-    private void tearDown(){
+    private void tearDown(ITestResult testResult){
+        new BaseTest().afterMethod(testResult);
         DriverFactory.quitDriver();
-    }
-
-    @Test
-    public void test1123(){
     }
 
     @Test(description = "Verify login with appropriate credentials.", threadPoolSize = 30)

@@ -1,4 +1,5 @@
 import driver.DriverFactory;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -19,6 +20,12 @@ public class TrainingListPageTest{
                 .openTrainingListPage();
     }
 
+    @AfterMethod
+    private void afterTest(ITestResult testResult){
+        new BaseTest().afterMethod(testResult);
+        DriverFactory.quitDriver();
+    }
+
     @Test(description = "Verify ‘Trainings’ search works properly with searching in ‘Skills’.")
     public void testTrainingsSearchBySkills(){
         trainingListBO.clearAllFilters()
@@ -35,10 +42,5 @@ public class TrainingListPageTest{
         trainingListBO.clearAllFilters()
                 .activateCheckboxFilterByCity(ConfProperties.getProperty("COUNTRY_UKRAINE"), ConfProperties.getProperty("CITY_LVIV"))
                 .verifySearchWithCountryAndMultiLocation(ConfProperties.getProperty("COUNTRY_UKRAINE"));
-    }
-
-    @AfterMethod
-    private void afterTest(){
-        DriverFactory.quitDriver();
     }
 }

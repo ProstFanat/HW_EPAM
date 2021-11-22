@@ -52,14 +52,4 @@ public class DriverFactory {
             driver = null;
         }
     }
-
-//    private static String getParameter(String name) {
-//        String value = System.getProperty(name);
-//        if (value == null)
-//            throw new RuntimeException(name + " is null");
-//        if (value.isEmpty())
-//            throw new RuntimeException(name + " is empty!");
-//
-//        return value;
-//    }
 }

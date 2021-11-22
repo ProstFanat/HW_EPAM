@@ -1,0 +1,491 @@
+import {v4 as uuid} from "uuid";
+import AirportsService from "../../app/backend/api-content/content/escape-pods/airports-service";
+import CartService from "../../app/backend/api-distribution/cart/cart-service";
+import BookService from "../../app/backend/api-product-escape-pods/distribution/book-service";
+import AvailablePods from "../../app/backend/helpers/available-pods";
+import CartServiceVerifications from "../../app/bussiness-verifications/api-distribution/cart/cart-service-verifications";
+import {reporter} from "../base-test-helper";
+import {expect, testHelper as runner} from "./api-test-helper";
+
+describe("Cart Service", function() {
+    runner.testContext.push(this);
+
+    context("Removed with 1 request - not valid cart", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+                const cartId = uuid();
+                for(let i = 0; i <= 1; i++){
+                    // Call to check if there are any available pods
+                    const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                    await reporter.step("Verify there are available pods", () => {
+                        expect(pod.responseCode).eq(201, "Response code is not 201");
+                        expect(pod.available).eq(true, "No pods are available, run is broken");
+                    });
+                    // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                    set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                    // Call to "Add to Cart"
+                    await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+                }
+
+                // Call to get cart content
+                const cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.items.length).eq(2, `Cart has incorrect count of pods`);
+                });
+
+                // Call to delete All items from cart
+                const deleteItemsFromCartResponse = await new CartService().deleteAllItemsFromCart(cartId);
+                await reporter.step("Perform delete all items from cart", () => {
+                    expect(deleteItemsFromCartResponse.status).eq(200, "Response code is not 200");
+                    expect(deleteItemsFromCartResponse.data.data.items.length).eq(0, "In cart not all items was deleted");
+                })
+            });
+        });
+    });
+
+    context("Removed with 1 request - valid cart", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+
+                const cartId = uuid();
+                for(let i = 0; i <= 1; i++){
+                    // Call to check if there are any available pods
+                    const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                    await reporter.step("Verify there are available pods", () => {
+                        expect(pod.responseCode).eq(201, "Response code is not 201");
+                        expect(pod.available).eq(true, "No pods are available, run is broken");
+                    });
+                    // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                    set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                    // Call to "Add to Cart"
+                    await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+                }
+
+                // Call to "Revalidate Cart"
+                const revalidateCartResponse = await new CartService().revalidateCart(cartId);
+                await reporter.step("Perform add to cart request", () => {
+                    expect(revalidateCartResponse.status).eq(200, `Revalidate cart returned incorrect status ${revalidateCartResponse.status}`);
+                });
+
+                // Call to get cart content
+                const cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.items.length).eq(2, `Cart has incorrect count of pods`);
+                });
+
+                // Call to delete All items from cart
+                const deleteItemsFromCartResponse = await new CartService().deleteAllItemsFromCart(cartId);
+                await reporter.step("Perform delete all items from cart", () => {
+                    expect(deleteItemsFromCartResponse.status).eq(200, "Response code is not 200");
+                    expect(deleteItemsFromCartResponse.data.data.items.length).eq(0, "In cart not all items was deleted");
+                })
+            });
+        });
+    });
+
+    context("Removed all items", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+
+                const cartId = uuid();
+                for(let i = 0; i <= 1; i++){
+                    // Call to check if there are any available pods
+                    const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                    await reporter.step("Verify there are available pods", () => {
+                        expect(pod.responseCode).eq(201, "Response code is not 201");
+                        expect(pod.available).eq(true, "No pods are available, run is broken");
+                    });
+                    // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                    set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                    // Call to "Add to Cart"
+                    await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+                }
+
+                // Call to get cart content
+                const cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.items.length).eq(2, `Cart has incorrect count of pods`);
+                });
+
+                for(let i = 0; i <= 1; i++) {
+                    // Call to delete items from cart
+                    const deleteItemFromCartResponse = await new CartService().deleteItemFromCart(cartId, cartServiceResponse.data.data.items[i].id);
+                    await reporter.step("Perform delete all items from cart", () => {
+                        expect(deleteItemFromCartResponse.status).eq(200, "Response code is not 200");
+                    })
+                }
+
+                // Call to get cart content
+                const getCartResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(getCartResponse.data.data.items.length).eq(0, "In cart not all items was deleted");
+                });
+
+            });
+        });
+    });
+
+    context("Item can be removed from cart", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+
+                const cartId = uuid();
+
+                // Call to check if there are any available pods
+                const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                await reporter.step("Verify there are available pods", () => {
+                    expect(pod.responseCode).eq(201, "Response code is not 201");
+                    expect(pod.available).eq(true, "No pods are available, run is broken");
+                });
+                // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+
+                // Call to get cart content
+                let cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.items.length).eq(1, `Cart has incorrect count of pods`);
+                });
+
+                // Call to delete item from cart
+                cartServiceResponse = await new CartService().deleteItemFromCart(cartId, cartServiceResponse.data.data.items[0].id);
+                await reporter.step("Perform method for delete item from cart", () => {
+                    expect(cartServiceResponse.status).eq(200, "Response code is not 200");
+                })
+
+                // Call to verify that item was deleted
+                cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.items.length).eq(0, `Cart has incorrect count of pods`);
+                });
+            });
+        });
+    });
+
+    context("Try delete already deleted", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+
+                const cartId = uuid();
+
+                // Call to check if there are any available pods
+                const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                await reporter.step("Verify there are available pods", () => {
+                    expect(pod.responseCode).eq(201, "Response code is not 201");
+                    expect(pod.available).eq(true, "No pods are available, run is broken");
+                });
+                // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+
+                // Call to get cart content
+                let cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.items.length).eq(1, `Cart has incorrect count of pods`);
+                });
+
+                // Call to delete item from cart
+                const deleteItemResponse = await new CartService().deleteItemFromCart(cartId, cartServiceResponse.data.data.items[0].id);
+                await reporter.step("Perform method for delete item from cart", () => {
+                    expect(deleteItemResponse.status).eq(200, "Response code is not 200");
+                })
+
+                // Call to try delete already deleted item
+                const deleteAlreadyDeletedItemResponse = await new CartService().deleteItemFromCart(cartId, cartServiceResponse.data.data.items[0].id);
+                await reporter.step("Perform get cart request", () => {
+                    expect(deleteAlreadyDeletedItemResponse.status).eq(500, `Response code is not 500`);
+                    expect(deleteAlreadyDeletedItemResponse.data.error.message)
+                        .eq(`No query results for model [Services\\Cart\\Models\\CartItem] ${cartServiceResponse.data.data.items[0].id}`);
+                });
+            });
+        });
+    });
+
+
+    context("Cart with all added items is returned", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+
+                const cartId = uuid();
+                let pods: any[] = [];
+                for(let i = 0; i <= 4; i++){
+                    // Call to check if there are any available pods
+                    const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                    await reporter.step("Verify there are available pods", () => {
+                        expect(pod.responseCode).eq(201, "Response code is not 201");
+                        expect(pod.available).eq(true, "No pods are available, run is broken");
+                    });
+                    // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                    set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                    // Call to "Add to Cart"
+                    await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+                    pods[i] = pod.data[0];
+                }
+
+                // Verify that cart returned added to the cart pods
+                const cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", async () => {
+                    expect(cartServiceResponse.data.data.items.length).eq(5, `Cart has incorrect count of pods`);
+                    await new CartServiceVerifications().verifyThatCartContainsRightPods(cartServiceResponse, pods);
+                });
+            });
+        });
+    });
+
+    context("Availability to add pod from each airport", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+
+                // Call to get airports
+                const airportsServiceResponse = await new AirportsService().getAllAirports();
+
+                // Verify that can add to cart pod from each airport
+                for (let i = 0; i < airportsServiceResponse.data.length; i++){
+                    set.testSet.availabilityRequest.criteria.pods.code = airportsServiceResponse.data[i].code;
+                    const cartId = uuid();
+                    // Call to check if there are any available pods
+                    const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                    await reporter.step("Verify there are available pods", () => {
+                        expect(pod.responseCode).eq(201, "Response code is not 201");
+                        expect(pod.available).eq(true, "No pods are available, run is broken");
+                    });
+                    // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                    set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                    // Call to "Add to Cart"
+                    await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+
+                    // Verify that cart returned added to the cart pods
+                    const cartServiceResponse = await new CartService().getCart(cartId);
+                    await reporter.step("Perform get cart request", async () => {
+                        expect(cartServiceResponse.data.data.items.length).eq(1, `Cart has incorrect count of pods`);
+                        await new CartServiceVerifications().verifyThatCartContainsRightPods(cartServiceResponse, pod);
+                    });
+                }
+            });
+        });
+    });
+
+    context("Max 5 items in the cart", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+
+                const cartId = uuid();
+                for (let i = 0; i <= 5; i++) {
+                    // Call to check if there are any available pods
+                    const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                    await reporter.step("Verify there are available pods", () => {
+                        expect(pod.responseCode).eq(201, "Response code is not 201");
+                        expect(pod.available).eq(true, "No pods are available, run is broken");
+                    });
+                    // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                    set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                    // Call to "Add to Cart"
+                    if( i != 5) {
+                        await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+                    } else if ( i == 5 ) {
+                        const cartServiceResponse = await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+                        expect(cartServiceResponse.status).eq(500, "Response code is not 500");
+                        expect(cartServiceResponse.data.error.message).eq("Too many items in the cart. Cart can`t contain more than 5 items.", "Error message is incorrect");
+                    }
+
+                }
+            });
+        });
+    });
+
+    context("Cart is not valid by default", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+
+                const cartId = uuid();
+
+                // Call to get cart content
+                let cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.is_valid).eq(false, `Cart is valid`);
+                });
+
+            });
+        });
+    });
+
+    context("Cart becomes valid after revalidation", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+                const cartId = uuid();
+
+                // Call to check if there are any available pods
+                const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                await reporter.step("Verify there are available pods", () => {
+                    expect(pod.responseCode).eq(201, "Response code is not 201");
+                    expect(pod.available).eq(true, "No pods are available, run is broken");
+                });
+                // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+
+                // Call to "Revalidate Cart"
+                const revalidateCartResponse = await new CartService().revalidateCart(cartId);
+                await reporter.step("Perform add to cart request", () => {
+                    expect(revalidateCartResponse.status).eq(200, `Revalidate cart returned incorrect status ${revalidateCartResponse.status}`);
+                });
+
+                // Call to get cart content
+                let cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.items.length).eq(1, `Cart has incorrect count of pods`);
+                    expect(cartServiceResponse.data.data.is_valid).eq(true, `Cart is not valid`);
+                });
+            })
+        })
+    });
+
+    context("Unique items in a cart", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+                const cartId = uuid();
+
+                // Call to check if there are any available pods
+                const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                await reporter.step("Verify there are available pods", () => {
+                    expect(pod.responseCode).eq(201, "Response code is not 201");
+                    expect(pod.available).eq(true, "No pods are available, run is broken");
+                });
+                // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+
+                // Call to add already added item to cart
+                let cartServiceResponse = await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.status).eq(500, `Response code is not 500`);
+                    expect(cartServiceResponse.data.error.message).eq("Item already in the cart.", `wrong error message`);
+                });
+            })
+        })
+    });
+
+    context("Unique items in a cart", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+                const cartId = uuid();
+
+                for (let i = 0; i < 2; i++) {
+                    // Call to check if there are any available pods
+                    const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                    await reporter.step("Verify there are available pods", () => {
+                        expect(pod.responseCode).eq(201, "Response code is not 201");
+                        expect(pod.available).eq(true, "No pods are available, run is broken");
+                    });
+                    // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                    set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                    await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+
+                    if(i == 1){
+                        // Call to get cart content
+                        let cartServiceResponse = await new CartService().getCart(cartId);
+                        await reporter.step("Perform get cart request", () => {
+                            expect(cartServiceResponse.data.data.is_valid).eq(false, `Cart is not valid`);
+                        });
+                        break;
+                    }
+                    // Call to "Revalidate Cart"
+                    const revalidateCartResponse = await new CartService().revalidateCart(cartId);
+                    await reporter.step("Perform add to cart request", () => {
+                        expect(revalidateCartResponse.status).eq(200, `Revalidate cart returned incorrect status ${revalidateCartResponse.status}`);
+                    });
+
+                    // Call to get cart content
+                    let cartServiceResponse = await new CartService().getCart(cartId);
+                    await reporter.step("Perform get cart request", () => {
+                        expect(cartServiceResponse.data.data.is_valid).eq(true, `Cart is not valid`);
+                    });
+                };
+            });
+        });
+    });
+
+    context("Totals Calculated upon revalidate", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+                const cartId = uuid();
+
+                // Call to check if there are any available pods
+                const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                await reporter.step("Verify there are available pods", () => {
+                    expect(pod.responseCode).eq(201, "Response code is not 201");
+                    expect(pod.available).eq(true, "No pods are available, run is broken");
+                });
+                // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+
+                // Call to get cart content
+                let cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.is_valid).eq(false, `Cart is valid`);
+                    expect(cartServiceResponse.data.data.totals).eq(undefined, `Cart has totals before revalidation`);
+                });
+
+                // Call to "Revalidate Cart"
+                cartServiceResponse = await new CartService().revalidateCart(cartId);
+                await reporter.step("Perform add to cart request", () => {
+                    expect(cartServiceResponse.status).eq(200, `Revalidate cart returned incorrect status ${cartServiceResponse.status}`);
+                });
+
+                // Call to get cart content
+                cartServiceResponse = await new CartService().getCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(cartServiceResponse.data.data.is_valid).eq(true, `Cart is not valid`);
+                    expect(cartServiceResponse.data.data.totals.discount).eq(0, `Cart has totals before revalidation`);
+                });
+            });
+        });
+    });
+
+    context("Not available item make cart not valid", function() {
+        runner.dataSet(this).forEach((set) => {
+            runner.play(`${set.testTitle}`, set, async function() {
+                const cartId = uuid();
+
+                // Call to check if there are any available pods
+                const pod = await new AvailablePods().wait(set.testSet.availabilityRequest, 60, 1);
+                await reporter.step("Verify there are available pods", () => {
+                    expect(pod.responseCode).eq(201, "Response code is not 201");
+                    expect(pod.available).eq(true, "No pods are available, run is broken");
+                });
+                // Updating the test data for "Add to Cart" request, with data returned from previous call and generating UUID for Cart
+                set.testSet.addToCartRequest.search_product_result_id = pod.data[0].search_product_result_id;
+                await new CartService().assignItemToCart(cartId, set.testSet.addToCartRequest);
+
+                // Call to "Revalidate Cart"
+                let revalidateCartResponse = await new CartService().revalidateCart(cartId);
+                await reporter.step("Perform add to cart request", () => {
+                    expect(revalidateCartResponse.status).eq(200, "Response code is not 200");
+                    expect(revalidateCartResponse.data.data.is_valid).eq(true, `Cart is not valid`);
+                });
+
+
+                // Prepairing data for booking from distribution api
+                set.testSet.bookingRequest.criteria.date = pod.date;
+                set.testSet.bookingRequest.criteria.time = pod.time;
+                set.testSet.bookingRequest.criteria.inventory_id = pod.data[0].inventory_id;
+
+                // Call to book pod from distribution api
+                const bookServiceResponse = await new BookService().booking(set.testSet.bookingRequest);
+                await reporter.step("Perform booking from distribution api", () => {
+                    expect(bookServiceResponse.status).eq(200, "Response code is not 201");
+                    expect(bookServiceResponse.data[0].status).eq('confirmed', "Status is incorrect");
+                })
+
+                // Call to revalidate cart
+                revalidateCartResponse = await new CartService().revalidateCart(cartId);
+                await reporter.step("Perform get cart request", () => {
+                    expect(revalidateCartResponse.status).eq(200, "Response code is not 200");
+                    expect(revalidateCartResponse.data.data.is_valid).eq(false, `Cart not valid`);
+                });
+            })
+        })
+    });
+
+});
