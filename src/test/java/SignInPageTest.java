@@ -11,7 +11,7 @@ public class SignInPageTest{
 
     @BeforeMethod
     private void setUp(){
-        DriverFactory.initDriver();
+        DriverFactory.initDriver(System.getProperty("browser"));
         new SignInBO()
                 .openSignInPage();
     }

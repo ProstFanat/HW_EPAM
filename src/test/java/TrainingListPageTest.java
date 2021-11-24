@@ -13,7 +13,7 @@ public class TrainingListPageTest{
 
     @BeforeMethod
     private void setUp(){
-        DriverFactory.initDriver();
+        DriverFactory.initDriver(System.getProperty("browser"));
         trainingListBO = new TrainingListBO();
         new SignInBO().openSignInPage()
                 .loginValid(ConfProperties.getProperty("LOGIN_MAIL"), ConfProperties.getProperty("LOGIN_PASS"))

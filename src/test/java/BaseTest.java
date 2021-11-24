@@ -10,7 +10,7 @@ public class BaseTest extends TestListenerAdapter {
 
     @BeforeClass
     public void setup(){
-        DriverFactory.initDriver();
+        DriverFactory.initDriver(System.getProperty("browser"));
     }
 
     @AfterMethod

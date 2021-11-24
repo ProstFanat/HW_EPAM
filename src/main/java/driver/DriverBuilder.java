@@ -7,51 +7,45 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import resources.ConfProperties;
 
-import java.sql.DriverManager;
 import java.util.concurrent.TimeUnit;
 
-public class DriverFactory {
-    private static final Logger LOG = Logger.getLogger(DriverFactory.class);
+public class DriverBuilder {
+    private static final Logger LOG = Logger.getLogger(DriverBuilder.class);
     private static WebDriver driver;
 
-    public static void initDriver(String browser){
-        //TODO Это пример пройстого фабричного метода
-        if(browser == null) browser = "chrome";
+    //TODO Пример Билдера
+
+    public DriverBuilder setBrowserName(String browser){
         switch (browser) {
             case "firefox" -> {
                 WebDriverManager.firefoxdriver().setup();
                 LOG.info("Set system property: 'firefox'");
                 driver = new FirefoxDriver();
                 LOG.info("Driver started");
-                setDefaultDriverConfiguration(driver);
             }
             default -> {
                 WebDriverManager.chromedriver().setup();
                 LOG.info(String.format("Set system property: '%s' , '%s'", ConfProperties.getProperty("CHROME_NAME"), ConfProperties.getProperty("CHROME_DRIVER_LOCATION")));
                 driver = new ChromeDriver();
                 LOG.info("Driver started");
-                setDefaultDriverConfiguration(driver);
             }
         }
+        return this;
     }
 
-    public static WebDriver getDriver(){
-        return driver;
-    }
-
-    private static WebDriver setDefaultDriverConfiguration(WebDriver driver){
+    public DriverBuilder setWindowMaximize(){
         driver.manage().window().maximize();
         LOG.info("Driver set maximize");
-        driver.manage().timeouts().implicitlyWait(Long.parseLong(ConfProperties.getProperty("IMPLICITLY_WAIT_VALUE")), TimeUnit.SECONDS);
-        LOG.info("Set Implicitly wait 10 second");
-        return driver;
+        return this;
     }
 
-    public static void quitDriver(){
-        if(driver != null){
-            driver.quit();
-            LOG.info("Driver was closed");
-            driver = null;
-        }
+    public DriverBuilder setImplicitlyWait(int seconds){
+        driver.manage().timeouts().implicitlyWait(seconds, TimeUnit.SECONDS);
+        LOG.info(String.format("Set Implicitly wait %s second", seconds));
+        return this;
+    }
+
+    public WebDriver getDriver(){
+        return driver;
     }
 }
