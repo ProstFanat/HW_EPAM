@@ -1,3 +1,4 @@
+import com.gurock.testrail.APIException;
 import dataProvider.EmailValues;
 import driver.DriverFactory;
 import org.jsoup.Connection;
@@ -6,8 +7,9 @@ import org.testng.annotations.*;
 import pageObjects.BasePage;
 import pageObjects.businessObjects.SignInBO;
 import resources.ConfProperties;
+import resources.TestRailAnnotations;
 
-public class SignInPageTest{
+public class SignInPageTest extends BaseTest{
 
     @BeforeMethod
     private void setUp(){
@@ -22,6 +24,7 @@ public class SignInPageTest{
         DriverFactory.quitDriver();
     }
 
+    @TestRailAnnotations.UseAsTestRailId(testRailId = 5)
     @Test(description = "Verify login with appropriate credentials.", threadPoolSize = 30)
     private void testLoginWithValidCredentials(){
         new SignInBO().loginValid(ConfProperties.getProperty("LOGIN_MAIL"),
@@ -30,6 +33,7 @@ public class SignInPageTest{
                 .logOut();
     }
 
+    @TestRailAnnotations.UseAsTestRailId(testRailId = 4)
     @Test(description = "Verify login with invalid password.", threadPoolSize = 30)
     private void testLoginWithInValidPassword(){
         new SignInBO().loginInvalid(ConfProperties.getProperty("LOGIN_MAIL"),
@@ -37,12 +41,14 @@ public class SignInPageTest{
                 .verifyFailedLoginErrorMessageDisplayed();
     }
 
+    @TestRailAnnotations.UseAsTestRailId(testRailId = 1)
     @Test(description = "positive scenario test", threadPoolSize = 30)
     private void testPositiveScenarioForEnteringMail(){
         new SignInBO().inputLoginName(ConfProperties.getProperty("LOGIN_MAIL"))
                         .verifyBtnContinueIsEnabled();
     }
 
+    @TestRailAnnotations.UseAsTestRailId(testRailId = 2)
     @Test(dataProvider = "valid-emails", dataProviderClass = EmailValues.class,
             description = "positive scenario test which will be verifying only 'boundary values' criteria",
             threadPoolSize = 30)
@@ -51,6 +57,7 @@ public class SignInPageTest{
                 .verifyBtnContinueIsEnabled();
     }
 
+    @TestRailAnnotations.UseAsTestRailId(testRailId = 3)
     @Test(dataProvider = "invalid-emails", dataProviderClass = EmailValues.class,
             description = "negative scenario test with verifying all the criteria",
             threadPoolSize = 30)

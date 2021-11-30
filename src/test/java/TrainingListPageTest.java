@@ -1,13 +1,21 @@
+import com.gurock.testrail.APIException;
 import driver.DriverFactory;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import pageObjects.businessObjects.SignInBO;
 import pageObjects.businessObjects.TrainingListBO;
 import resources.ConfProperties;
+import resources.SlackIntegration;
+import resources.TestRailIntegration;
 
-public class TrainingListPageTest{
+import java.io.IOException;
+import java.util.List;
+
+//@Listeners(com.gurock.testrail.Listener.class)
+public class TrainingListPageTest extends BaseTest{
 
     private TrainingListBO trainingListBO;
 
@@ -21,7 +29,7 @@ public class TrainingListPageTest{
     }
 
     @AfterMethod
-    private void afterTest(ITestResult testResult){
+    private void afterTest(ITestResult testResult) throws APIException, IOException, NoSuchMethodException {
         new BaseTest().afterMethod(testResult);
         DriverFactory.quitDriver();
     }
@@ -42,5 +50,10 @@ public class TrainingListPageTest{
         trainingListBO.clearAllFilters()
                 .activateCheckboxFilterByCity(ConfProperties.getProperty("COUNTRY_UKRAINE"), ConfProperties.getProperty("CITY_LVIV"))
                 .verifySearchWithCountryAndMultiLocation(ConfProperties.getProperty("COUNTRY_UKRAINE"));
+    }
+
+    @Test
+    public void testTest() throws Exception {
+        new SlackIntegration().sendTestExecutionStatusToSlack("test");
     }
 }
