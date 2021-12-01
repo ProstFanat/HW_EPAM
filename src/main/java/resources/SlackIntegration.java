@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class SlackIntegration {
     private static final Logger LOG = Logger.getLogger(SlackIntegration.class);
-    private static String urlSlackWebHook = "https://hooks.slack.com/services/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";
+    private static String urlSlackWebHook = "https://hooks.slack.com/services/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";
     private static String channelName = "study";
     private static String botUserOAuthAccessToken = "xoxb-2777636683632-2756200412772-Y0r62EdNgO1nujmV0jMkZWgM";
 

@@ -1,4 +1,5 @@
 import dataProvider.BlogLinks;
+import driver.DriverFactory;
 import org.bouncycastle.util.test.TestResult;
 import org.testng.annotations.*;
 import pageObjects.businessObjects.BlogBO;
@@ -6,6 +7,11 @@ import pageObjects.businessObjects.SignInBO;
 import resources.ConfProperties;
 
 public class BlogPageTest extends BaseTest {
+
+    @BeforeClass
+    public void setup(){
+        DriverFactory.initDriver(System.getProperty("browser"));
+    }
 
     @BeforeGroups("Links test")
     private void setUp(){

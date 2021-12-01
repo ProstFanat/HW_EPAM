@@ -1,10 +1,7 @@
 import com.gurock.testrail.APIException;
 import driver.DriverFactory;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import pageObjects.businessObjects.SignInBO;
 import pageObjects.businessObjects.TrainingListBO;
 import resources.ConfProperties;
@@ -14,10 +11,14 @@ import resources.TestRailIntegration;
 import java.io.IOException;
 import java.util.List;
 
-//@Listeners(com.gurock.testrail.Listener.class)
 public class TrainingListPageTest extends BaseTest{
 
     private TrainingListBO trainingListBO;
+
+    @BeforeClass
+    private void setUpClass(){
+        setSuiteId(Integer.parseInt(ConfProperties.getProperty("TEST_RAIL_SUIT_ID_TRAINING_LIST")));
+    }
 
     @BeforeMethod
     private void setUp(){
@@ -29,7 +30,7 @@ public class TrainingListPageTest extends BaseTest{
     }
 
     @AfterMethod
-    private void afterTest(ITestResult testResult) throws APIException, IOException, NoSuchMethodException {
+    private void afterTest(ITestResult testResult){
         new BaseTest().afterMethod(testResult);
         DriverFactory.quitDriver();
     }
@@ -54,6 +55,7 @@ public class TrainingListPageTest extends BaseTest{
 
     @Test
     public void testTest() throws Exception {
+        setTempTestId(6);
         new SlackIntegration().sendTestExecutionStatusToSlack("test");
     }
 }
