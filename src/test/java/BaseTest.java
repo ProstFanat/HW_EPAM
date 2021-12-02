@@ -11,6 +11,7 @@ import resources.SlackIntegration;
 import resources.TestRailIntegration;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,9 +31,11 @@ public class BaseTest extends TestListenerAdapter {
 
     @AfterMethod
     public void afterMethod(ITestResult result){
+        result.getMethod().getId();
         testIdList.add(tempTestId);
         testResultList.add(result);
     }
+
 
     @AfterClass
     public void exit() throws Exception {

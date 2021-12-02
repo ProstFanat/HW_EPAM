@@ -2,17 +2,8 @@ package resources;
 
 import com.codepine.api.testrail.TestRail;
 import com.codepine.api.testrail.model.*;
-import com.gurock.testrail.APIClient;
-import com.gurock.testrail.APIException;
 import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
-import org.testng.IClass;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
-import com.codepine.api.testrail.TestRail.Projects;
-
-import java.io.IOException;
-import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -36,7 +27,7 @@ public class TestRailIntegration {
     }
 
 
-    public TestRailIntegration createRun() throws ParseException {
+    public TestRailIntegration createRun(){
         LOG.info("Creating new test run");
         SimpleDateFormat format = new SimpleDateFormat("dd MMM yyy kk mm s");
         Date date = new Date();

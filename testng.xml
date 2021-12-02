@@ -1,9 +1,9 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Suite1" verbose="1" parallel="classes" thread-count="2">
+<suite name="Suite1">
 
-    <test name="parallel-running-test">
 
+    <test name="TrainingList">
         <classes>
             <class name="SignInPageTest"/>
         </classes>

@@ -1,3 +1,4 @@
+import com.epam.reportportal.testng.ReportPortalTestNGListener;
 import dataProvider.EmailValues;
 import driver.DriverFactory;
 import org.testng.ITestResult;
@@ -5,6 +6,7 @@ import org.testng.annotations.*;
 import pageObjects.businessObjects.SignInBO;
 import resources.ConfProperties;
 
+@Listeners({ReportPortalTestNGListener.class})
 public class SignInPageTest extends BaseTest {
 
     @BeforeMethod
